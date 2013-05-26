@@ -21,17 +21,17 @@ Encode Email makes multiple email obfuscation filters available in your template
 
 ## Encode Filter
 
-The `encode` filter will encode your email address.  The name `encode` is meant to be a human-friendly name, however, under the hood filter uses the same encoding technique as the Rot13 filter below.  
+The `encode` filter will encode your email address and make it harder to be picked up off the page by spambots.  Under the hood, the `encode` filter uses the same encoding technique as the Rot13 filter below. `encode` is just an easier name to remember.
 
 ## Rot13
 
 The `rot13` filter encodes the string you pass to it using the [Rot13 cipher](https://en.wikipedia.org/wiki/ROT13) and returns a javascript tag to decode it on the page.
 
-To use it, you must wrap the entire string you want to encode as a Twig string, and run the rot13 filter on the string:
+To use it, you must wrap the entire string you want to encode as a Twig string, and run the `rot13` filter on the string:
 
-    {{ "<a href=‘mailto:you@example.com’>Your Name</a>" | rot13 }}
+    {{ "<a href='mailto:you@example.com'>Your Name</a>" | rot13 }}
 
-To use this filter for email, your entire link tag must be wrapped in the filter because the filter returns script tags. The Rot13 filter will return code similar to the following example in your page code, however, your visitors will see the link tag as you defined it above.
+To use this filter for email, your entire link tag must be wrapped in the filter.  This is necessary because the filter returns a script tag and will break your link tag if you only include the email address itself. The `rot13` filter will return code similar to the following example in your page code, however, your visitors will see the link tag as you defined it above.
 
     <script type="text/javascript">document.write("<n uers=‘znvygb:lbh@rknzcyr.pbz’>Lbhe Anzr</n>".replace(/[a-zA-Z]/g, function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);}));</script>
     
@@ -39,7 +39,7 @@ To use this filter for email, your entire link tag must be wrapped in the filter
 
 The `entities` filter encodes your content into HTML Entities.  If you filter your email information with it like so:
 
-    <a href=‘{{ "mailto:you@example.com" | entities }}’>Your Name</a>
+    <a href='{{ "mailto:you@example.com" | entities }}'>Your Name</a>
 
 The code on your page will be output as HTML Entities, but your visitors will see the information that you defined above:
 
