@@ -32,7 +32,13 @@ class EncodeEmailTwigExtension extends Twig_Extension
      */
     public function encode($string)
     {
-        return $this->_encodeStringRot13($string);
+		$pattern = "~<a .*?href=[\'|\"]mailto:(.*?)[\'|\"].*?>.*?</a>~";
+		preg_match_all( $pattern, $string, $matches );
+		foreach( $matches[0] as $email ) {
+			$email_to_replace = "~$email~";
+			$string = preg_replace( $email_to_replace, $this->_encodeStringRot13($email), $string );
+		}
+		return $string;
     }
 
     /**
@@ -43,7 +49,13 @@ class EncodeEmailTwigExtension extends Twig_Extension
      */
     public function rot13($string)
     {
-        return $this->_encodeStringRot13($string);
+		$pattern = "~<a .*?href=[\'|\"]mailto:(.*?)[\'|\"].*?>.*?</a>~";
+		preg_match_all( $pattern, $string, $matches );
+		foreach( $matches[0] as $email ) {
+			$email_to_replace = "~$email~";
+			$string = preg_replace( $email_to_replace, $this->_encodeStringRot13($email), $string );
+		}
+		return $string;
     }
 
     /**
@@ -65,14 +77,13 @@ class EncodeEmailTwigExtension extends Twig_Extension
      * @return mixed          An encoded string and javascript decoder function
      */
     private function _encodeStringRot13($string) {
-
-        // rot13 encryption
-        $encryptedString = str_replace('"','\"',str_rot13($string));
-
-        // build the string we'll output to the page
-        $string = '<script type="text/javascript">document.write("' . $encryptedString . '".replace(/[a-zA-Z]/g, function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);}));</script>';
-        
-        return $string;   
+		$encrypted_email = null;
+		$length = strlen( $email );
+		for( $i = 0; $i < $length; $i++ ) {
+			$encrypted_email .= str_replace( '"', '\"', str_rot13( $email[$i] ) );
+			$return = '<script type="text/javascript">document.write("' . $encrypted_email . '".replace(/[a-zA-Z]/g, function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);}));</script>';
+		}		
+		return $return;
     }
 
     /**
